@@ -52,7 +52,7 @@ const loadImages = async (isNewSearch = false) => {
         if (currentPage > 1) {
             setTimeout(() => {
                 const galleryHeight = refs.gallery.getBoundingClientRect().height;
-                window.scrollBy({ top: galleryHeight, behavior: 'smooth' });
+                window.scrollBy({ top: galleryHeight * 2, behavior: 'smooth' });
             }, 300);
         }
         
