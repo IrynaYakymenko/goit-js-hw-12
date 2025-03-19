@@ -1,12 +1,8 @@
-import axios from 'axios';
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
-import SimpleLightbox from "simplelightbox";
-
-import { createImageCard } from './js/render-functions';
+import { renderGallery, clearGallery } from './js/render-functions';
 import { fetchData } from './js/pixabay-api';
 
-let lightbox;
 let currentPage = 1;
 let currentQuery = '';
 
@@ -32,16 +28,15 @@ const onSearchImage = async event => {
 
     currentQuery = query;
     currentPage = 1;
-    refs.gallery.innerHTML = "";
+    clearGallery(refs.gallery);
     refs.loadMoreBtn.classList.add('is-hidden');
-    
     await loadImages(true);
 };
 
 const loadImages = async (isNewSearch = false) => {
     try {
         refs.loader.classList.remove('hidden');
-        const { data } = await fetchData(currentQuery, currentPage);
+        const data = await fetchData(currentQuery, currentPage);
         
         if (data.hits.length === 0) {
             iziToast.warning({
@@ -52,14 +47,7 @@ const loadImages = async (isNewSearch = false) => {
             return;
         }
 
-        const imageCards = data.hits.map(img => createImageCard(img)).join('');
-        refs.gallery.insertAdjacentHTML('beforeend', imageCards);
-
-        if (!lightbox) {
-            lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
-        } else {
-            lightbox.refresh();
-        }
+        renderGallery(data.hits, refs.gallery);
 
         if (currentPage > 1) {
             setTimeout(() => {

@@ -1,3 +1,8 @@
+import SimpleLightbox from "simplelightbox";
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+let lightbox;
+
 export const createImageCard = image => {
     return `
         <li class="gallery-item">
@@ -30,3 +35,19 @@ export const createImageCard = image => {
         </li>
     `;
   };
+
+export const renderGallery = (images, galleryRef) => {
+    const imageCards = images.map(img => createImageCard(img)).join('');
+        galleryRef.insertAdjacentHTML('beforeend', imageCards);
+
+        if (!lightbox) {
+            lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
+        } else {
+            lightbox.refresh();
+        }
+
+};
+
+export const clearGallery = galleryRef => {
+    galleryRef.innerHTML = '';
+};
